@@ -13,7 +13,7 @@ class UserService:
     @staticmethod
     def get_users(db: Session) -> List[User]:
         """获取所有用户列表"""
-        return db.query(User).all()
+        return db.query(User).order_by(User.status.asc()).all()
     
     @staticmethod
     def get_users_paginated(db: Session, page: int, page_size: int) -> Dict[str, Any]:
@@ -22,10 +22,10 @@ class UserService:
         offset = (page - 1) * page_size
         
         # 获取总数
-        total = db.query(User).count()
+        total = db.query(User).filter(User.status != UserStatus.deleted.value).count()
         
         # 获取分页数据
-        users = db.query(User).offset(offset).limit(page_size).all()
+        users = db.query(User).filter(User.status != UserStatus.deleted.value).order_by(User.status.asc()).offset(offset).limit(page_size).all()
         
         # 计算总页数
         total_pages = ceil(total / page_size)
