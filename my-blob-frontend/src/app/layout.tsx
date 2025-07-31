@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "../components/AuthProvider";
 import { ViewProvider } from "../components/ViewContext";
 import { Navigation } from "../components/Navigation";
+import { AlertProvider } from "../components/AlertProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,8 +33,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <ViewProvider>
-            <Navigation />
-            <main className="min-h-screen bg-gray-50">{children}</main>
+            <AlertProvider>
+              <Navigation />
+              <main className="min-h-screen bg-gray-50">{children}</main>
+            </AlertProvider>
           </ViewProvider>
         </AuthProvider>
       </body>

@@ -1,10 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  authService,
-  UserRegister,
-  UserLogin,
-  LoginResponse,
-} from "../services/authService";
+import { authService, UserRegister, UserLogin } from "../services/authService";
 import { User } from "../services/userApi";
 
 interface AuthState {

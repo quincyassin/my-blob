@@ -1,29 +1,33 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { LoginForm } from '../../components/LoginForm';
-import { RegisterForm } from '../../components/RegisterForm';
-import { useAuth } from '../../hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { LoginForm } from "../../components/LoginForm";
+import { RegisterForm } from "../../components/RegisterForm";
+import { useAuth } from "../../hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useAlert } from "@/components/AlertProvider";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const { showSuccessAlert } = useAlert();
 
   // 如果已经登录，重定向到首页
   React.useEffect(() => {
     if (isAuthenticated) {
-      router.push('/');
+      router.push("/");
     }
   }, [isAuthenticated, router]);
 
   const handleLoginSuccess = () => {
-    router.push('/');
+    showSuccessAlert("登录成功");
+    router.push("/");
   };
 
   const handleRegisterSuccess = () => {
     // 注册成功后切换到登录页面
+    showSuccessAlert("注册成功");
     setIsLogin(true);
   };
 
@@ -44,4 +48,4 @@ export default function AuthPage() {
       </div>
     </div>
   );
-} 
+}
