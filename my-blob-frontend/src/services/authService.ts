@@ -53,7 +53,9 @@ class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!apiService.getToken();
+    const token = apiService.getToken();
+    const user = this.getUser();
+    return !!(token && user);
   }
 
   // 用户认证相关API（不需要token）

@@ -2,15 +2,55 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "./AuthProvider";
 import { useViewContext } from "./ViewContext";
 
 export const Navigation: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuthContext();
   const { currentView, setCurrentView } = useViewContext();
+  const pathname = usePathname();
+  const [forceUpdate, setForceUpdate] = React.useState(0);
+  const [localAuthState, setLocalAuthState] = React.useState({
+    isAuthenticated: false,
+    user: null as any,
+  });
+  const router = useRouter();
+
+  // 监听认证状态变化
+  React.useEffect(() => {
+    const handleAuthChange = (event: any) => {
+      console.log("Navigation received authStateChanged event", event.detail);
+      setLocalAuthState(event.detail);
+    };
+
+    window.addEventListener("authStateChanged", handleAuthChange);
+    return () =>
+      window.removeEventListener("authStateChanged", handleAuthChange);
+  }, []);
+
+  // 使用本地状态或 Context 状态
+  const currentAuthState = localAuthState.isAuthenticated
+    ? localAuthState
+    : { isAuthenticated, user };
+
+  // 调试信息
+  console.log("Navigation render:", {
+    contextAuth: { isAuthenticated, user },
+    localAuth: localAuthState,
+    currentAuth: currentAuthState,
+    pathname,
+    forceUpdate,
+  });
+
+  // 在登录页面隐藏导航栏
+  if (pathname === "/auth") {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();
+    router.push("/auth");
   };
 
   return (
@@ -63,7 +103,7 @@ export const Navigation: React.FC = () => {
               >
                 联系
               </button>
-              {isAuthenticated && (
+              {currentAuthState.isAuthenticated && (
                 <button
                   onClick={() => setCurrentView("users")}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -79,10 +119,12 @@ export const Navigation: React.FC = () => {
           </div>
 
           <div className="flex items-center">
-            {isAuthenticated ? (
+            {currentAuthState.isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-700">
-                  欢迎，{user?.name || user?.username}
+                  欢迎，
+                  {currentAuthState.user?.name ||
+                    currentAuthState.user?.username}
                 </span>
                 <button
                   onClick={handleLogout}

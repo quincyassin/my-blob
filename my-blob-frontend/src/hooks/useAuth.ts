@@ -30,6 +30,21 @@ export const useAuth = () => {
     initAuth();
   }, []);
 
+  // 监听 localStorage 变化，确保状态同步
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const user = authService.getUser();
+      setAuthState({
+        user,
+        isAuthenticated: authService.isAuthenticated(),
+        isLoading: false,
+      });
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   // 登录
   const login = useCallback(async (credentials: UserLogin): Promise<void> => {
     try {
@@ -41,7 +56,7 @@ export const useAuth = () => {
       const user: User = {
         id: response.user_id,
         username: response.username,
-        name: "", // 这里需要从后端获取完整用户信息
+        name: response.username, // 暂时使用用户名作为显示名称
         phone: "",
         age: 0,
         status: 1,
@@ -53,6 +68,22 @@ export const useAuth = () => {
         user,
         isAuthenticated: true,
         isLoading: false,
+      });
+
+      // 触发全局事件，通知其他组件状态已更新
+      console.log("Dispatching authStateChanged event", {
+        isAuthenticated: true,
+        user,
+      });
+      window.dispatchEvent(
+        new CustomEvent("authStateChanged", {
+          detail: { isAuthenticated: true, user },
+        })
+      );
+
+      // 确保状态更新完成
+      return new Promise((resolve) => {
+        setTimeout(resolve, 50);
       });
     } catch (error) {
       setAuthState((prev) => ({ ...prev, isLoading: false }));
