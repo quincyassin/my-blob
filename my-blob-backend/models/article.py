@@ -9,6 +9,7 @@ class Article(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
+    user_id = Column(Integer, nullable = False)
     summary = Column(Text, nullable=False)
     content = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)

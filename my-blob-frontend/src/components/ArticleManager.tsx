@@ -59,6 +59,7 @@ export default function ArticleManager({
     title: "",
     summary: "",
     content: "",
+    user_id: 0,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +73,7 @@ export default function ArticleManager({
         title: article.title,
         summary: article.summary,
         content: article.content || "",
+        user_id: article.user_id,
       });
     } else {
       setEditingArticle(null);
@@ -79,6 +81,7 @@ export default function ArticleManager({
         title: "",
         summary: "",
         content: "",
+        user_id: 0,
       });
     }
     setOpenDialog(true);
@@ -92,6 +95,7 @@ export default function ArticleManager({
       title: "",
       summary: "",
       content: "",
+      user_id: 0,
     });
     setError(null);
   };
@@ -114,10 +118,16 @@ export default function ArticleManager({
         };
         await updateArticle(editingArticle.id, updateData);
       } else {
+        const userStr = localStorage.getItem("auth_user");
+        if (!userStr) {
+          setError("用户未登录");
+        }
+        const user = userStr ? JSON.parse(userStr) : null;
         const createData: CreateArticleRequest = {
           title: formData.title,
           summary: formData.summary,
           content: formData.content || undefined,
+          user_id: user.id,
         };
         await createArticle(createData);
       }

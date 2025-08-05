@@ -13,6 +13,7 @@ class ArticleBase(BaseModel):
     """Base model for articles, shared by create and response."""
     title: str
     summary: str
+    user_id: int
     content: Optional[str] = None
 
 

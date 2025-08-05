@@ -40,7 +40,8 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
             db,
             title=article.title,
             summary=article.summary,
-            content=article.content  # type: ignore
+            content=article.content,
+            user_id = article.user_id  # type: ignore
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"创建文章失败: {str(e)}") from e

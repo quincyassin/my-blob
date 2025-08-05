@@ -14,9 +14,9 @@ class ArticleService:
         return db.query(Article).filter(Article.id == article_id).first()
 
     @staticmethod
-    def create_article(db: Session, title: str, summary: str, content: str):
+    def create_article(db: Session, title: str, summary: str, content: str, user_id: int):
         """创建新文章"""
-        article = Article(title=title, summary=summary, content=content)
+        article = Article(title=title, summary=summary, content=content, user_id=user_id)
         db.add(article)
         db.commit()
         db.refresh(article)

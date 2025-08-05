@@ -6,6 +6,7 @@ export interface Article {
   title: string;
   summary: string;
   content: string | null;
+  user_id: number;
   created_at: string;
   updated_at: string;
 }
@@ -14,6 +15,7 @@ export interface CreateArticleRequest {
   title: string;
   summary: string;
   content?: string;
+  user_id: number;
 }
 
 export interface UpdateArticleRequest {
