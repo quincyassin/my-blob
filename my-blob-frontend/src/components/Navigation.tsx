@@ -5,15 +5,16 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "./AuthProvider";
 import { useViewContext } from "./ViewContext";
+import { UserMenu } from "./UserMenu";
+import { User } from "@/services/userApi";
 
 export const Navigation: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuthContext();
   const { currentView, setCurrentView } = useViewContext();
   const pathname = usePathname();
-  const [forceUpdate, setForceUpdate] = React.useState(0);
   const [localAuthState, setLocalAuthState] = React.useState({
     isAuthenticated: false,
-    user: null as any,
+    user: null as User | null,
   });
   const router = useRouter();
 
@@ -34,15 +35,6 @@ export const Navigation: React.FC = () => {
     ? localAuthState
     : { isAuthenticated, user };
 
-  // 调试信息
-  console.log("Navigation render:", {
-    contextAuth: { isAuthenticated, user },
-    localAuth: localAuthState,
-    currentAuth: currentAuthState,
-    pathname,
-    forceUpdate,
-  });
-
   // 在登录页面隐藏导航栏
   if (pathname === "/auth") {
     return null;
@@ -55,7 +47,7 @@ export const Navigation: React.FC = () => {
 
   return (
     <nav className="bg-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
@@ -120,18 +112,11 @@ export const Navigation: React.FC = () => {
 
           <div className="flex items-center">
             {currentAuthState.isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-700">
-                  欢迎，
-                  {currentAuthState.user?.name ||
-                    currentAuthState.user?.username}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  退出
-                </button>
+              <div className="flex items-center space-x-2">
+                <UserMenu
+                  user={currentAuthState.user}
+                  handleLogout={handleLogout}
+                />
               </div>
             ) : (
               <div className="flex items-center space-x-4">

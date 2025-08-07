@@ -2,9 +2,10 @@
 
 import React, { createContext, useContext } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { User } from "@/services/userApi";
 
 interface AuthContextType {
-  user: any;
+  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: any) => Promise<void>;
