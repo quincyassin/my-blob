@@ -1,17 +1,10 @@
 import { User } from "@/services/userApi";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Card, CardActions, CardContent, IconButton } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { blue } from "@mui/material/colors";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { useClickOutSide } from "@/hooks/useClickOutSide";
 
 interface UserMenuProps {
   user: User | null;
@@ -20,11 +13,11 @@ interface UserMenuProps {
 
 export const UserMenu: React.FC<UserMenuProps> = ({ user, handleLogout }) => {
   const [isHover, setIsHover] = useState(false);
-
-  const [isHidden, setIsHidden] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseClick = () => {
-    setIsHidden(!isHidden);
+    setIsActive(!isActive);
   };
 
   const handleMouseEnter = () => {
@@ -34,7 +27,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user, handleLogout }) => {
     setIsHover(false);
   };
 
-  const handleClose = () => {};
+  const handleClose = () => {
+    setIsActive(false);
+  };
+
+  useClickOutSide(cardRef, () => setIsActive(false), isActive);
 
   return (
     <>
@@ -46,8 +43,9 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user, handleLogout }) => {
       >
         {user?.name?.charAt(0)}
       </Avatar>
-      {isHidden && (
+      {isActive && (
         <Card
+          ref={cardRef}
           sx={{
             position: "absolute",
             top: 65, // 控制卡片出现在头像下方
@@ -83,29 +81,6 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user, handleLogout }) => {
           </CardContent>
         </Card>
       )}
-      {/* <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={() => {
-          setAnchorEl(null);
-        }}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <MenuItem disabled>
-          {user?.name || user?.username || "未命名用户"}
-        </MenuItem>
-        <MenuItem>个人资料</MenuItem>
-        <MenuItem>设置</MenuItem>
-        <MenuItem
-          onClick={() => {
-            setAnchorEl(null);
-            handleLogout();
-          }}
-        >
-          退出登录
-        </MenuItem>
-      </Menu> */}
     </>
   );
 };
