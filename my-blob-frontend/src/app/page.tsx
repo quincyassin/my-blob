@@ -22,6 +22,7 @@ import ArticleManager from "../components/ArticleManager";
 import UserManagerTable from "../components/UserManagerTable";
 import { useRouter } from "next/navigation";
 import { useViewContext } from "../components/ViewContext";
+import { cutByLength } from "@/utils/stringUtil";
 
 export default function Home() {
   const { currentView } = useViewContext();
@@ -118,7 +119,7 @@ export default function Home() {
                               }}
                               onClick={() => handleArticleClick(article.id)}
                             >
-                              {article.title}
+                              {cutByLength(article.title, 30)}
                             </TableCell>
                             <TableCell>{article.summary}</TableCell>
                             <TableCell sx={{ color: "text.secondary" }}>

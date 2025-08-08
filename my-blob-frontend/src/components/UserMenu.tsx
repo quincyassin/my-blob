@@ -1,5 +1,11 @@
 import { User } from "@/services/userApi";
-import { Card, CardActions, CardContent, IconButton } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { blue } from "@mui/material/colors";
 import React, { useState, useRef } from "react";
@@ -69,14 +75,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user, handleLogout }) => {
           </IconButton>
           <CardContent sx={{ pt: 4 }}>
             <CardActions sx={{ justifyContent: "center" }}>
-              个人资料
+              <Button>个人资料</Button>
             </CardActions>
-            <CardActions sx={{ justifyContent: "center" }}>设置</CardActions>
-            <CardActions
-              sx={{ justifyContent: "center" }}
-              onClick={handleLogout}
-            >
-              退出登录
+            <CardActions sx={{ justifyContent: "center" }}>
+              <Button>设置</Button>
+            </CardActions>
+            <CardActions sx={{ justifyContent: "center" }}>
+              <Button onClick={handleLogout}>退出登录</Button>
             </CardActions>
           </CardContent>
         </Card>
